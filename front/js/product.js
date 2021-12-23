@@ -10,6 +10,12 @@ async function getProducts() {
     
 }
 
+async function resultat() {
+    let product = await getProducts()
+    console.log(product)
+}
+
+resultat()
 
 
 
