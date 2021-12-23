@@ -61,15 +61,25 @@ function addToCart(product){
 
     // création d'un événement sur le click du bouton
     button.addEventListener("click", function(){
+        // récupération de la valeur de la couleur selectionnée
         let colorsValue = document.querySelector("#colors").value;
         console.log(colorsValue)
+        // récupération de la valeur de la quantité sélectionnée
         let quantityValue = document.querySelector("#quantity").value;
         console.log(quantityValue)
+        // création d'un objet kanap avec son ID, sa quantité et sa couleur
         let kanap = {
             id: product._id,
             quantity: parseInt(quantityValue),
-            color: colorsValue
-        }      
+            color: colorsValue,
+            nom: product.name,
+            prix: product.price,
+            description: product.description,
+            img: product.imageUrl,
+            atl: product.altTxt
+        }
+
+        // Si le local storage "panier" existe      
         if(localStorage.getItem("panier")){
             productArray = JSON.parse(localStorage.getItem("panier")); //parse = vers ObjetJS
             for(article of productArray){
@@ -85,7 +95,6 @@ function addToCart(product){
         else{
             productArray.push(kanap);
             localStorage.setItem("panier", JSON.stringify(productArray));
-            console.log("item ajouté")
         }
     })
 }

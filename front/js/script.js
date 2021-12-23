@@ -25,7 +25,7 @@ function displayContent(resultatAPI){
         let productArticle = document.createElement("article");
         productLink.appendChild(productArticle);
     
-        //Inseertion Img
+        //Insertion Img
         let productImg = document.createElement("img");
         productArticle.appendChild(productImg);
         productImg.src = resultatAPI[article].imageUrl;
