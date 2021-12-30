@@ -4,6 +4,7 @@ console.log(cartArray)
 
 function cartSettings(){
     getCart()
+    getTotal()
 }
 
 cartSettings()
@@ -72,6 +73,12 @@ function getCart(){
 
         let productQuantity = document.createElement("input");
         quantitySettings.appendChild(productQuantity);
+        productQuantity.addEventListener("change", function(){
+            const indexOfProduct = cartArray.indexOf(product);
+            cartArray[indexOfProduct].quantity = productQuantity.value;
+            setLocalStorage()
+            getTotal()
+        })
         productQuantity.className = "itemQuantity"
         productQuantity.value = product.quantity;
         productQuantity.setAttribute("type", "number");
@@ -81,6 +88,15 @@ function getCart(){
 
         let deleteSettings = document.createElement("div");
         settingsContent.appendChild(deleteSettings);
+        deleteSettings.addEventListener("click", function(){
+            const indexOfProduct = cartArray.indexOf(product);
+            cartArray.splice(indexOfProduct, 1);
+            console.log(cartArray) 
+            deleteSettings.closest("article").remove()
+
+            setLocalStorage()
+            getTotal()
+        })
         deleteSettings.className = "cart__item__content__settings__delete";
         let deleteItem = document.createElement("p");
         deleteSettings.appendChild(deleteItem);
@@ -88,3 +104,34 @@ function getCart(){
         deleteItem.textContent = "Supprimer"
     }
 }}
+
+function getTotal(){
+
+    // Total de toutes les quantités
+    let productQtty = document.getElementsByClassName("itemQuantity");
+    let quantityLenght = productQtty.length;
+    console.log(quantityLenght),
+
+    totalQuantity = 0;
+    totalPrice = 0
+
+    for(var i = 0; i < quantityLenght; ++i){
+        totalQuantity += productQtty[i].valueAsNumber;
+
+        //Calcul du prix total
+        totalPrice += (productQtty[i].valueAsNumber * cartArray[i].prix)
+    }
+
+    let cartTotalQuantity = document.getElementById("totalQuantity");
+    cartTotalQuantity.innerHTML = totalQuantity;
+    console.log(totalQuantity)
+
+    let  allTotalPrices = document.querySelector("#totalPrice");
+    allTotalPrices.innerHTML = totalPrice;
+ }
+
+
+function setLocalStorage(){
+    localStorage.setItem("panier", JSON.stringify(cartArray));
+}
+
