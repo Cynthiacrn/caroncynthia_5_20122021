@@ -63,6 +63,7 @@ function getCart(){
         descriptionContainer.appendChild(settingsContent);
         settingsContent.className = "cart__item__content__settings";
         
+        // paramètres des quantités
         let quantitySettings = document.createElement("div");
         settingsContent.appendChild(quantitySettings);
         quantitySettings.className = "cart__item__content__settings__quantity";
@@ -73,8 +74,9 @@ function getCart(){
 
         let productQuantity = document.createElement("input");
         quantitySettings.appendChild(productQuantity);
+        // gestion de la modification des produits dans le panier
         productQuantity.addEventListener("change", function(){
-            const indexOfProduct = cartArray.indexOf(product);
+            const indexOfProduct = cartArray.indexOf(product); // création d'un index
             cartArray[indexOfProduct].quantity = productQuantity.value;
             setLocalStorage()
             getTotal()
@@ -86,14 +88,15 @@ function getCart(){
         productQuantity.setAttribute("max", "100");
         productQuantity.setAttribute("name", "itemQuantity");
 
+        // paramètres de la suppression
         let deleteSettings = document.createElement("div");
         settingsContent.appendChild(deleteSettings);
+        // gestion de la suppression des produits dans le panier
         deleteSettings.addEventListener("click", function(){
-            const indexOfProduct = cartArray.indexOf(product);
-            cartArray.splice(indexOfProduct, 1);
+            const indexOfProduct = cartArray.indexOf(product); // création d'un index
+            cartArray.splice(indexOfProduct); // suppression dans mon tableau du local storage
             console.log(cartArray) 
-            deleteSettings.closest("article").remove()
-
+            deleteSettings.closest("article").remove() // suppression dans le dom
             setLocalStorage()
             getTotal()
         })
