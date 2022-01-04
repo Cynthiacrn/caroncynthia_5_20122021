@@ -110,6 +110,7 @@ function getCart(){
     }
 }}
 
+
 // fonction qui calcul le total des quantités et du prix
 function getTotal(){
 
@@ -141,7 +142,7 @@ function setLocalStorage(){
     localStorage.setItem("panier", JSON.stringify(cartArray)); //stringify = vers JSON
 }
 
-
+// fonction qui valide les données remplies dans le formulaire
 function checkRegex(regex, input){
     if(regex.test(input)){
         return true;
@@ -154,27 +155,37 @@ function checkRegex(regex, input){
 
 // récupération des données du formulaire
 function listenForm(){
-    const letterFormat = /^[a-zA-ZéêèàëÉÈÊË\-]+$/;
-    const addressFormat = /^[a-zA-ZéêèàëÉÈÊË0-9\s,.'-]{3,}$/;
-    const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const letterFormat = /^[a-zA-ZéêèàëÉÈÊË\-]+$/; // expression pour le format des lettre
+    const addressFormat = /^[a-zA-ZéêèàëÉÈÊË0-9\s,.'-]{3,}$/; // expression pour l'adresse
+    const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // expression pour le mail
     let firstName = document.querySelector("#firstName")
     let lastName = document.querySelector("#lastName");
     let address = document.querySelector("#address");
-    let city = document.querySelector("#city")
-    let email = document.querySelector("#email")
+    let city = document.querySelector("#city");
+    let email = document.querySelector("#email");
     let button = document.querySelector(".cart__order__form__submit");
+    let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+    let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg")
+    let addressErrorMsg = document.querySelector("#addressErrorMsg");
+    let cityErrorMsg = document.querySelector("#cityErrorMsg");
+    let emailErrorMsg = document.querySelector("#emailErrorMsg")
+
+    // evenement sur la clique du bouton
     button.addEventListener("click", function(e){
         e.preventDefault();
+        // si les données son exactes
         if(checkRegex(letterFormat, firstName.value)
         && checkRegex(letterFormat, lastName.value)
         && checkRegex(addressFormat, address.value)
         && checkRegex(addressFormat, city.value)
         && checkRegex(mailFormat, email.value)){
+            // créaction d'un array depuis le localstorage
             let product = [];
             let storage = JSON.parse(localStorage.getItem("panier"));
             for(i of storage){
                 product.push(i.id);
             }
+            // Objet contact
             let order = {
                 contact:{
                     firstName: firstName.value,
@@ -183,7 +194,7 @@ function listenForm(){
                     city: city.value,
                     email: email.value,
                 },
-                products : product,
+                products: product,
             }
             const settings = {
                 method: "POST",
@@ -193,7 +204,6 @@ function listenForm(){
                     "Content-Type": "application/json"
                 },
             }
-
             fetch("http://localhost:3000/api/products/order", settings)
             .then(response => response.json())
             .then(data => {
@@ -205,13 +215,22 @@ function listenForm(){
             .catch(error => console.error(error));
         }
         else{
-            e.preventDefault();
-            alert("Veuillez remplir correctement tous les champs");
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner votre prénom.';
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner votre nom.';
+            addressErrorMsg.innerHTML = 'Veuillez renseigner votre adresse.';
+            cityErrorMsg.innerHTML = 'Veuillez renseigner votre ville.';
+            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
         }
     });
     
 }
 
-let confirmation = document.querySelector("#orderId").textContent = localStorage.getItem("orderID");
-localStorage.clear();
-console.log(confirmation)
+
+function main(){
+    const orderID = document.querySelector("#orderId");
+    orderID.innerText = localStorage.getItem("orderId");
+    console.log(localStorage.getItem("orderId"))
+    localStorage.clear();
+}
+
+main();
