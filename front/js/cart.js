@@ -5,6 +5,8 @@ console.log(cartArray)
 function cartSettings(){
     getCart()
     getTotal()
+    setLocalStorage()
+    listenForm()
 }
 
 cartSettings()
@@ -108,19 +110,20 @@ function getCart(){
     }
 }}
 
+// fonction qui calcul le total des quantités et du prix
 function getTotal(){
 
     // Total de toutes les quantités
     let productQtty = document.getElementsByClassName("itemQuantity");
     let quantityLenght = productQtty.length;
-    console.log(quantityLenght),
+    console.log(quantityLenght)
 
     totalQuantity = 0;
-    totalPrice = 0
+    totalPrice = 0;
 
     for(var i = 0; i < quantityLenght; ++i){
+        //Calcul des quantités totales
         totalQuantity += productQtty[i].valueAsNumber;
-
         //Calcul du prix total
         totalPrice += (productQtty[i].valueAsNumber * cartArray[i].prix)
     }
@@ -133,8 +136,82 @@ function getTotal(){
     allTotalPrices.innerHTML = totalPrice;
  }
 
-
+// fonction qui récupère le panier du local storage
 function setLocalStorage(){
-    localStorage.setItem("panier", JSON.stringify(cartArray));
+    localStorage.setItem("panier", JSON.stringify(cartArray)); //stringify = vers JSON
 }
 
+
+function checkRegex(regex, input){
+    if(regex.test(input)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
+// récupération des données du formulaire
+function listenForm(){
+    const letterFormat = /^[a-zA-ZéêèàëÉÈÊË\-]+$/;
+    const addressFormat = /^[a-zA-ZéêèàëÉÈÊË0-9\s,.'-]{3,}$/;
+    const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let firstName = document.querySelector("#firstName")
+    let lastName = document.querySelector("#lastName");
+    let address = document.querySelector("#address");
+    let city = document.querySelector("#city")
+    let email = document.querySelector("#email")
+    let button = document.querySelector(".cart__order__form__submit");
+    button.addEventListener("click", function(e){
+        e.preventDefault();
+        if(checkRegex(letterFormat, firstName.value)
+        && checkRegex(letterFormat, lastName.value)
+        && checkRegex(addressFormat, address.value)
+        && checkRegex(addressFormat, city.value)
+        && checkRegex(mailFormat, email.value)){
+            let product = [];
+            let storage = JSON.parse(localStorage.getItem("panier"));
+            for(i of storage){
+                product.push(i.id);
+            }
+            let order = {
+                contact:{
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    address: address.value,
+                    city: city.value,
+                    email: email.value,
+                },
+                products : product,
+            }
+            const settings = {
+                method: "POST",
+                body: JSON.stringify(order),
+                headers:{
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json"
+                },
+            }
+
+            fetch("http://localhost:3000/api/products/order", settings)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                localStorage.clear();
+                localStorage.setItem("orderID", data.orderId);
+                window.location.href = "confirmation.html";
+            })
+            .catch(error => console.error(error));
+        }
+        else{
+            e.preventDefault();
+            alert("Veuillez remplir correctement tous les champs");
+        }
+    });
+    
+}
+
+let confirmation = document.querySelector("#orderId").textContent = localStorage.getItem("orderID");
+localStorage.clear();
+console.log(confirmation)
