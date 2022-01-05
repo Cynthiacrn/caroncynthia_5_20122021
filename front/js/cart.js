@@ -158,6 +158,8 @@ function listenForm(){
     const letterFormat = /^[a-zA-ZéêèàëÉÈÊË\-]+$/; // expression pour le format des lettre
     const addressFormat = /^[a-zA-ZéêèàëÉÈÊË0-9\s,.'-]{3,}$/; // expression pour l'adresse
     const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // expression pour le mail
+
+    // récupération dans le dom
     let firstName = document.querySelector("#firstName")
     let lastName = document.querySelector("#lastName");
     let address = document.querySelector("#address");
@@ -185,7 +187,7 @@ function listenForm(){
             for(i of storage){
                 product.push(i.id);
             }
-            // Objet contact
+            // objet commande
             let order = {
                 contact:{
                     firstName: firstName.value,
@@ -196,6 +198,7 @@ function listenForm(){
                 },
                 products: product,
             }
+            // envoie du formulaire avec notre objet order
             const settings = {
                 method: "POST",
                 body: JSON.stringify(order),
@@ -209,8 +212,7 @@ function listenForm(){
             .then(data => {
                 console.log(data)
                 localStorage.clear();
-                localStorage.setItem("orderID", data.orderId);
-                window.location.href = "confirmation.html";
+                document.location.href = `confirmation.html?orderID=${data.orderId}`;
             })
             .catch(error => console.error(error));
         }
@@ -224,13 +226,3 @@ function listenForm(){
     });
     
 }
-
-
-function main(){
-    const orderID = document.querySelector("#orderId");
-    orderID.innerText = localStorage.getItem("orderId");
-    console.log(localStorage.getItem("orderId"))
-    localStorage.clear();
-}
-
-main();
