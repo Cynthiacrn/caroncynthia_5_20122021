@@ -80,6 +80,7 @@ function getCart(){
         productQuantity.addEventListener("change", function(){
             const indexOfProduct = cartArray.indexOf(product); // création d'un index
             cartArray[indexOfProduct].quantity = productQuantity.value;
+            console.log("change",cartArray)
             setLocalStorage()
             getTotal()
         })
@@ -96,8 +97,11 @@ function getCart(){
         // gestion de la suppression des produits dans le panier
         deleteSettings.addEventListener("click", function(){
             const indexOfProduct = cartArray.indexOf(product); // création d'un index
-            cartArray.splice(indexOfProduct); // suppression dans mon tableau du local storage
-            console.log(cartArray) 
+            console.log("produit",product)
+            console.log("index",indexOfProduct)
+            console.log("tableau",cartArray)
+            cartArray.splice(indexOfProduct, 1); // suppression d'un seul produit dans mon index
+            console.log("suppression", cartArray) 
             deleteSettings.closest("article").remove() // suppression dans le dom
             setLocalStorage()
             getTotal()
@@ -152,7 +156,6 @@ function checkRegex(regex, input){
     }
 }
 
-
 // récupération des données du formulaire
 function listenForm(){
     const letterFormat = /^[a-zA-ZéêèàëÉÈÊË\-]+$/; // expression pour le format des lettre
@@ -175,6 +178,21 @@ function listenForm(){
     // evenement sur la clique du bouton
     button.addEventListener("click", function(e){
         e.preventDefault();
+        if(checkRegex(letterFormat, firstName.value)== false){
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner correctement votre prénom.';
+        }
+        if(checkRegex(letterFormat, lastName.value)== false){
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner correctement votre nom.';
+        } 
+        if(checkRegex(addressFormat, address.value)== false){
+            addressErrorMsg.innerHTML = 'Veuillez renseigner correctement votre adresse.';
+        }  
+        if(checkRegex(addressFormat, city.value)== false){
+            cityErrorMsg.innerHTML = 'Veuillez renseigner correctement votre ville.';
+        }  
+        if(checkRegex(mailFormat, email.value)== false){
+            emailErrorMsg.innerHTML = 'Veuillez renseigner correctement votre email.';
+        }  
         // si les données son exactes
         if(checkRegex(letterFormat, firstName.value)
         && checkRegex(letterFormat, lastName.value)
@@ -215,13 +233,6 @@ function listenForm(){
                 document.location.href = `confirmation.html?orderID=${data.orderId}`;
             })
             .catch(error => console.error(error));
-        }
-        else{
-            firstNameErrorMsg.innerHTML = 'Veuillez renseigner votre prénom.';
-            lastNameErrorMsg.innerHTML = 'Veuillez renseigner votre nom.';
-            addressErrorMsg.innerHTML = 'Veuillez renseigner votre adresse.';
-            cityErrorMsg.innerHTML = 'Veuillez renseigner votre ville.';
-            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
         }
     });
     
