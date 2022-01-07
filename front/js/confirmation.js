@@ -2,7 +2,7 @@
 function confirmation(){
     // récupération des paramètres de l'URL
     let params = (new URL(window.location)).searchParams;
-    // récupération du numéro de commande
+    // récupération du numéro de commande dans l'URL
     let orderID = params.get("orderID")
     console.log(orderID)
     document.querySelector("#orderId").textContent = orderID;
