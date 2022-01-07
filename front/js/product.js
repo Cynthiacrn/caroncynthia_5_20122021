@@ -3,6 +3,7 @@ var url = new URL(str);
 var productId = url.searchParams.get("id");
 console.log(productId)
 
+// récupération des produits par ID de l'API
 async function getProducts() {
 
     var response = await fetch('http://localhost:3000/api/products/' + productId)
@@ -20,8 +21,8 @@ async function resultat() {
 
 resultat()
 
+// Répartition des details du produit dans la page produit
 function displayProduct(product){
-    // affichage des details du produit dans la page produit
 
     // ajout du nom du produit
     let title = document.querySelector("h1#title");
@@ -45,7 +46,7 @@ function displayProduct(product){
     let description = document.querySelector("#description");
     description.textContent = product.description;
 
-    // ajout d'un boucle for afin de sélectionner la coleur souhaitée 
+    // ajout d'un boucle for afin de sélectionner la couleur souhaitée 
     let selectColor = document.querySelector("#colors");
     for(color of product.colors){
         let currentColor = document.createElement("option");
@@ -55,6 +56,7 @@ function displayProduct(product){
     }
 }
 
+// ajout du produit au panier grâce au bouton
 function addToCart(product){
     let button = document.querySelector("#addToCart");
     let productArray = [];
@@ -70,7 +72,7 @@ function addToCart(product){
         // création d'un objet kanap avec son ID, sa quantité et sa couleur
         let kanap = {
             id: product._id,
-            quantity: parseInt(quantityValue),
+            quantity: parseInt(quantityValue), // parseInt renvoie un entier
             color: colorsValue,
             nom: product.name,
             prix: product.price,
@@ -81,6 +83,7 @@ function addToCart(product){
 
         // Si le local storage "panier" existe      
         if(localStorage.getItem("panier")){
+            // notre local storage devient un array
             productArray = JSON.parse(localStorage.getItem("panier")); //parse = vers ObjetJS
             for(article of productArray){
                 if(kanap.id === article.id && kanap.color === article.color){

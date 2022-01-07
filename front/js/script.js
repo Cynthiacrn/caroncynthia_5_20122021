@@ -1,16 +1,19 @@
 Products();
-
+// récupération des produits de l'API
 async function getProducts() {
 
     var response = await fetch('http://localhost:3000/api/products')
     return await response.json();  
 }
 
+
+// résultat = produits
 async function Products(){
     var result = await getProducts()
     displayContent(result)
 }
 
+// répartition des résultats de l'API dans le DOM 
 function displayContent(resultatAPI){
     const articles = resultatAPI;
             console.log(articles);
@@ -19,6 +22,7 @@ function displayContent(resultatAPI){
         //Insertion de "a"
         let productLink = document.createElement("a");
         document.querySelector(".items").appendChild(productLink);
+        // rédirection vers l'URL de la page produit avec l'ID du produit
         productLink.href = `product.html?id=${resultatAPI[article]._id}`;
     
         //Insertion de "article"

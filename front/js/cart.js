@@ -2,6 +2,8 @@
 let cartArray = JSON.parse(localStorage.getItem("panier"));
 console.log(cartArray)
 
+
+// fonction principale qui appelle toutes les fonctions
 function cartSettings(){
     getCart()
     getTotal()
@@ -11,6 +13,7 @@ function cartSettings(){
 
 cartSettings()
 
+// Récupération des données stockées dans le localStorage et les afficher sur le DOM
 function getCart(){
     if(cartArray === null || cartArray === 0){
         let emptyMessage = document.createElement("p");
@@ -100,7 +103,7 @@ function getCart(){
             console.log("produit",product)
             console.log("index",indexOfProduct)
             console.log("tableau",cartArray)
-            cartArray.splice(indexOfProduct, 1); // suppression d'un seul produit dans mon index
+            cartArray.splice(indexOfProduct, 1); // suppression d'un seul produit dans mon tableau
             console.log("suppression", cartArray) 
             deleteSettings.closest("article").remove() // suppression dans le dom
             setLocalStorage()
@@ -178,6 +181,7 @@ function listenForm(){
     // evenement sur la clique du bouton
     button.addEventListener("click", function(e){
         e.preventDefault();
+        // si les données sont inexactes envoyer un message d'erreur
         if(checkRegex(letterFormat, firstName.value)== false){
             firstNameErrorMsg.innerHTML = 'Veuillez renseigner correctement votre prénom.';
         }
@@ -229,7 +233,9 @@ function listenForm(){
             .then(response => response.json())
             .then(data => {
                 console.log(data)
+                // suppression des données stockées dans le local storage
                 localStorage.clear();
+                // création de l'URL qui redirige automatiquement vers la page confirmation si tout est correct
                 document.location.href = `confirmation.html?orderID=${data.orderId}`;
             })
             .catch(error => console.error(error));
